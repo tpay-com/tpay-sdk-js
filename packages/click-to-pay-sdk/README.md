@@ -84,9 +84,7 @@ c2p.encryptCardFn = async () => {
   // Example: Call your backend to encrypt the card
   const response = await fetch("/api/encrypt-card", {
     method: "POST",
-    body: JSON.stringify({
-      /* card data */
-    }),
+    body: JSON.stringify({/* card data */}),
   });
   return await response.text(); // Should return encrypted card data as string
 };

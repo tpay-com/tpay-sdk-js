@@ -6,11 +6,7 @@ type CardStatus = "ACTIVE" | "SUSPENDED" | "EXPIRED" | "PENDING";
 type ConsumerStatus = "ACTIVE" | "SUSPENDED" | "LOCKED";
 type AddressVerbosity = "FULL" | "NONE" | "POSTAL_COUNTRY";
 type DeviceType =
-  | "BROWSER"
-  | "WEB_BROWSER"
-  | "MOBILE_APP"
-  | "IOT_DEVICE"
-  | "OTHER";
+  "BROWSER" | "WEB_BROWSER" | "MOBILE_APP" | "IOT_DEVICE" | "OTHER";
 
 type SrciActionCode = "NEW_USER" | "AUTH_FAILED" | "AUTH_SKIPPED";
 

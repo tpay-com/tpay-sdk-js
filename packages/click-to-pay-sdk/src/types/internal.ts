@@ -71,10 +71,7 @@ export interface OnboardData {
 }
 
 export type InitializationResult =
-  | "ALREADY_INITIALIZED"
-  | "RECOGNIZED"
-  | "REQUIRES_OTP"
-  | "NOT_RECOGNIZED";
+  "ALREADY_INITIALIZED" | "RECOGNIZED" | "REQUIRES_OTP" | "NOT_RECOGNIZED";
 
 export type ProfilesByNetwork =
   | (VisaSrcProfile & { network: "visa" })
