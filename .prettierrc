@@ -1,0 +1,6 @@
+{
+  "plugins": ["@ianvs/prettier-plugin-sort-imports"],
+  "importOrder": ["^@tpay", "^[./]"],
+  "trailingComma": "es5",
+  "tabWidth": 2
+}

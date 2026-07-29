@@ -1,0 +1,27 @@
+{
+  "name": "@tpay-com/click-to-pay-sdk",
+  "version": "0.99.1",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {},
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "dependencies": {
+    "lodash.merge": "^4.6.2",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/lodash.merge": "^4.6.9"
+  }
+}

@@ -1,0 +1,50 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master, develop]
+
+env:
+  NODE_VERSION: "22"
+  NX_CLOUD_ACCESS_TOKEN: ""
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install dependencies
+        run: npm run setup:ci
+
+      - name: Security audit
+        run: npm audit --audit-level=critical
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v5
+
+      - name: Format check
+        run: npx nx format:check --base=$NX_BASE --head=$NX_HEAD
+
+      - name: Lint affected projects
+        run: npx nx affected -t lint --parallel=3 --verbose
+
+      - name: Run unit tests
+        run: npx nx run-many -t test --coverage --parallel=3 --configuration=ci
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-report
+          path: packages/*/coverage
+          retention-days: 14

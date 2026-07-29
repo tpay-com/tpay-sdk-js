@@ -1,0 +1,63 @@
+name: Create release
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: "Package to release"
+        required: true
+        type: choice
+        options:
+          - click-to-pay-sdk
+      version:
+        description: "Version to release (e.g. 1.2.3)"
+        required: true
+
+env:
+  NODE_VERSION: "22"
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm run setup:ci
+
+      - name: Lint, type-check and build
+        run: npx nx run-many -t lint type-check build -p ${{ inputs.package }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "Tpay CI"
+          git config user.email ci-noreply@tpay.com
+
+      - name: Create release branch
+        run: git checkout -b release/${{ inputs.package }}/${{ inputs.version }}
+
+      - name: Set package version
+        working-directory: packages/${{ inputs.package }}
+        run: npm version ${{ inputs.version }} --no-git-tag-version
+
+      - name: Commit version bump
+        run: |
+          git commit -am "chore(release): ${{ inputs.package }}@${{ inputs.version }}"
+
+      - name: Push release branch
+        run: git push origin release/${{ inputs.package }}/${{ inputs.version }}
+
+      - name: Create pull request
+        uses: thomaseizinger/create-pull-request@1.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          head: release/${{ inputs.package }}/${{ inputs.version }}
+          base: master
+          title: "Release ${{ inputs.package }}@${{ inputs.version }} into master"

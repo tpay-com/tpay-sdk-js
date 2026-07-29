@@ -1,0 +1,56 @@
+name: Publish
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+
+env:
+  NODE_VERSION: "22"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.event.pull_request.merged && (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix/'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract package and version from branch name
+        run: |
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          REST="${BRANCH_NAME#release/}"
+          REST="${REST#hotfix/}"
+          echo "RELEASE_PACKAGE=${REST%%/*}" >> "$GITHUB_ENV"
+          echo "RELEASE_VERSION=${REST#*/}" >> "$GITHUB_ENV"
+
+      - name: Checkout source
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: npm run setup:ci
+
+      - name: Build package
+        run: npx nx build ${{ env.RELEASE_PACKAGE }}
+
+      - name: Publish to npm
+        working-directory: packages/${{ env.RELEASE_PACKAGE }}
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ env.RELEASE_PACKAGE }}@${{ env.RELEASE_VERSION }}
+          name: ${{ env.RELEASE_PACKAGE }}@${{ env.RELEASE_VERSION }}
+          commit: master
+          body: "Release is available on npm. Run `npm install @tpay-com/${{ env.RELEASE_PACKAGE }}@${{ env.RELEASE_VERSION }}`"

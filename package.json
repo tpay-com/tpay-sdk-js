@@ -1,0 +1,96 @@
+{
+  "name": "@tpay-sdk-js/source",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "setup": "npm install && npx --no-install",
+    "setup:ci": "npm ci --cache .npm --prefer-offline && npx --no-install",
+    "lint": "nx affected -t lint --parallel=3",
+    "test": "nx affected -t test --parallel=3",
+    "build": "nx affected -t build --parallel=3",
+    "format-check": "npx nx format:check",
+    "type-check": "nx affected --target=type-check --parallel=3",
+    "publish:pkg": "nx run-many -t lint type-check build -p click-to-pay-sdk && cd packages/click-to-pay-sdk && npm version patch && npm publish"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
+    "@nx/eslint": "22.6.3",
+    "@nx/eslint-plugin": "22.6.3",
+    "@nx/jest": "22.6.3",
+    "@nx/js": "22.6.3",
+    "@nx/rollup": "22.6.3",
+    "@nx/vite": "22.6.3",
+    "@nx/vitest": "22.6.3",
+    "@nx/web": "22.6.3",
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-terser": "^1.0.0",
+    "@rollup/plugin-typescript": "^12.1.4",
+    "@swc-node/register": "^1.11.1",
+    "@swc/cli": "~0.6.0",
+    "@swc/core": "^1.15.21",
+    "@swc/helpers": "~0.5.11",
+    "@swc/jest": "~0.2.38",
+    "@tailwindcss/vite": "^4.1.17",
+    "@types/jest": "^30.0.0",
+    "@types/lodash.merge": "^4.6.9",
+    "@types/node": "^25.5.0",
+    "@vitest/ui": "4.1.2",
+    "autoprefixer": "^10.4.27",
+    "eslint": "^9.39.4",
+    "jest": "^30.0.2",
+    "jest-environment-node": "^30.0.2",
+    "jest-util": "^30.0.2",
+    "jiti": "^2.6.1",
+    "jsdom": "^29.0.1",
+    "jsonc-eslint-parser": "^3.1.0",
+    "lodash.merge": "^4.6.2",
+    "nx": "22.6.3",
+    "postcss": "^8.4.38",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.7.1",
+    "rollup": "^4.14.0",
+    "tailwindcss": "^4.1.17",
+    "ts-jest": "^29.4.0",
+    "ts-node": "10.9.1",
+    "tslib": "^2.3.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "^8.29.0",
+    "verdaccio": "^6.1.6",
+    "vite": "^7.3.1",
+    "vitest": "4.1.2"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "nx": {
+    "includedScripts": [],
+    "targets": {
+      "local-registry": {
+        "executor": "@nx/js:verdaccio",
+        "options": {
+          "port": 4873,
+          "config": ".verdaccio/config.yml",
+          "storage": "tmp/local-registry/storage"
+        }
+      }
+    }
+  },
+  "overrides": {
+    "picomatch": "^4.0.4",
+    "handlebars": "^4.7.8",
+    "lodash": "^4.17.23",
+    "@verdaccio/core": {
+      "minimatch": "^9.0.5",
+      "ajv": "^8.17.2"
+    },
+    "@verdaccio/utils": {
+      "minimatch": "^7.4.9"
+    }
+  }
+}

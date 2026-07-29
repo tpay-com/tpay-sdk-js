@@ -1,0 +1,13 @@
+{
+  "name": "click-to-pay-sdk",
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{projectRoot}/coverage/jest/coverage"],
+      "cache": true,
+      "options": {
+        "jestConfig": "{projectRoot}/jest.config.ts"
+      }
+    }
+  }
+}

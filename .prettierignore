@@ -1,0 +1,37 @@
+# Dependencies
+node_modules
+**/node_modules/
+
+# Example (code snippets, not part of the build)
+**/example/
+
+.github
+
+# Production builds
+
+**/dist/
+dist
+build
+**/build/
+coverage
+**/coverage/
+
+# Generated files
+*.generated.*
+*.d.ts
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# IDE files
+.vscode
+.idea
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Add files here to ignore them from prettier formatting
+.nx/
