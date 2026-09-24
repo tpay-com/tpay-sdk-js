@@ -152,7 +152,7 @@ export class MastercardAdapter
   }
 
   async checkout(
-    { saveDevice, srcDigitalCardId, windowRef }: CheckoutInput,
+    { saveDevice, srcDigitalCardId, windowRef, consumer }: CheckoutInput,
     { encryptCardFn, sharedIdToken, onboardData, config }: C2PContext
   ) {
     const sdk = this.getSdkOrThrow();
@@ -190,6 +190,7 @@ export class MastercardAdapter
       srcDigitalCardId,
       windowRef,
       saveDevice,
+      consumer,
     });
 
     return await sdk.checkout(checkoutRequest);
