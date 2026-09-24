@@ -19,7 +19,7 @@ export const getMastercardPrivacyPolicyLink = () => {
 export const MASTERCARD_INIT_SDK_TRANSACTION_OPTIONS: Partial<DpaTransactionOptions> =
   {
     customInputData: {
-      "com.mastercard.dcfExperience": "WITHIN_CHECKOUT",
+      "com.mastercard.dcfExperience": "PAYMENT_SETTINGS",
     },
     confirmPayment: false,
     dpaShippingPreference: "NONE",

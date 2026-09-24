@@ -35,6 +35,10 @@ export async function buildCheckoutRequest(
           transactionAmount: (config.amount / 100).toFixed(2),
           transactionCurrencyCode: config.currency,
         },
+        customInputData: {
+          customFlowType: "withincheckout" as const,
+          checkoutOrchestrator: "merchant" as const,
+        },
       },
     },
     {

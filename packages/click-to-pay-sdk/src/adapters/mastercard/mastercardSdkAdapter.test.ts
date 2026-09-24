@@ -139,4 +139,50 @@ describe("MastercardAdapter", () => {
       );
     });
   });
+
+  describe("checkout", () => {
+    it("forwards consumer to buildCheckoutRequest when enrolling a new card", async () => {
+      const { buildCheckoutRequest } = require("./utils");
+      const consumer = { firstName: "Jan", lastName: "Kowalski" };
+
+      await adapter.checkout(
+        {
+          network: "mastercard",
+          consumer,
+          windowRef: null,
+        },
+        makeContext({ encryptCardFn: async () => "encrypted-card-jwt" })
+      );
+
+      expect(buildCheckoutRequest).toHaveBeenCalledWith(
+        expect.objectContaining({ consumer })
+      );
+    });
+
+    it("enrolls the card before checking out when a new card is being added", async () => {
+      await adapter.checkout(
+        { network: "mastercard", windowRef: null },
+        makeContext({ encryptCardFn: async () => "encrypted-card-jwt" })
+      );
+
+      expect(mastercardSdkMock.enrollCard).toHaveBeenCalledWith(
+        expect.objectContaining({ encryptedCard: "encrypted-card-jwt" })
+      );
+      expect(mastercardSdkMock.checkout).toHaveBeenCalledTimes(1);
+    });
+
+    it("does not enroll a card when paying with one already on file", async () => {
+      await adapter.checkout(
+        {
+          network: "mastercard",
+          srcDigitalCardId: "card-123",
+          windowRef: null,
+        },
+        makeContext()
+      );
+
+      expect(mastercardSdkMock.enrollCard).not.toHaveBeenCalled();
+      expect(mastercardSdkMock.checkout).toHaveBeenCalledTimes(1);
+    });
+  });
 });

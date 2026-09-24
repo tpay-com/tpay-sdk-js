@@ -5,7 +5,7 @@ import {
   getMastercardTermsLink,
   MASTERCARD_SDK_TRANSACTION_OPTIONS,
 } from "../config";
-import { CheckoutRequest, ComplianceSettings } from "../types";
+import { CheckoutRequest, ComplianceSettings, Consumer } from "../types";
 
 export function createValidationComplianceSettings(
   saveDevice?: boolean
@@ -59,6 +59,7 @@ export function buildCheckoutRequest({
   saveDevice,
   windowRef,
   encryptedCard,
+  consumer,
 }: {
   idToken?: string;
   config: C2PConfig;
@@ -67,6 +68,7 @@ export function buildCheckoutRequest({
   saveDevice?: boolean;
   windowRef?: Window | null;
   encryptedCard?: string;
+  consumer?: Consumer;
 }): CheckoutRequest {
   const dpaBase = onboardData.mastercardInitObject?.dpaTransactionOptions ?? {};
 
@@ -74,6 +76,12 @@ export function buildCheckoutRequest({
     {},
     dpaBase,
     MASTERCARD_SDK_TRANSACTION_OPTIONS,
+    {
+      customInputData: {
+        "com.mastercard.dcfExperience": "WITHIN_CHECKOUT",
+      },
+      ...(encryptedCard ? { isGuestCheckout: true } : {}),
+    },
     {
       dpaLocale: config.locale,
       transactionAmount: {
@@ -93,6 +101,7 @@ export function buildCheckoutRequest({
 
   if (encryptedCard) {
     checkoutRequest.encryptedCard = encryptedCard;
+    checkoutRequest.consumer = consumer;
   } else if (srcDigitalCardId) {
     checkoutRequest.srcDigitalCardId = srcDigitalCardId;
   } else {
